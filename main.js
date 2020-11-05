@@ -61,6 +61,7 @@ function calculate() {
     console.log("User input: "+userInput);
     var nums = new Array;
     var tempNum = "";
+    var passParse = true;
     for (var i = 0; i < userInput.length; i++) {
         console.log(">>Reached character " + userInput[i]);
         if (isNumber(userInput[i])) {
@@ -72,6 +73,7 @@ function calculate() {
             else {
                 alert("ERROR: Expecting operator.");
                 reset();
+                passParse = false;
                 break;
             }
         }
@@ -97,6 +99,7 @@ function calculate() {
                 else {
                     alert("ERROR: Expecting number.");
                     reset();
+                    passParse = false;
                     break;
                 }
             }
@@ -106,57 +109,60 @@ function calculate() {
             else {
                 alert("ERROR: Invalid character detected.");
                 reset();
+                passParse = false;
                 break;
             }
         }
     }
-    if (nums.length > 1) {
-        for (var i = 0; i < nums.length; i++) {
-            var pos = i;
-            var calc = 0;
-            if (nums[i] === 'x') {
-                calc = Number(nums[i - 1]) * Number(nums[i  + 1]);
-                console.log(nums[i - 1] + " x " + nums[i  + 1] + " is " + calc);
-                nums.splice(i, 2);
-                nums[pos - 1] = calc;
-                console.log(nums);
-                i = 0;
+    if (passParse) {
+        if (nums.length > 1) {
+            for (var i = 0; i < nums.length; i++) {
+                var pos = i;
+                var calc = 0;
+                if (nums[i] === 'x') {
+                    calc = Number(nums[i - 1]) * Number(nums[i  + 1]);
+                    console.log(nums[i - 1] + " x " + nums[i  + 1] + " is " + calc);
+                    nums.splice(i, 2);
+                    nums[pos - 1] = calc;
+                    console.log(nums);
+                    i = 0;
+                }
+                else if (nums[i] === '/') {
+                    calc = Number(nums[i - 1]) / Number(nums[i  + 1]);
+                    console.log(nums[i - 1] + " / " + nums[i  + 1] + " is " + calc);
+                    nums.splice(i, 2);
+                    nums[pos - 1] = calc;
+                    console.log(nums);
+                    i = 0;
+                }
             }
-            else if (nums[i] === '/') {
-                calc = Number(nums[i - 1]) / Number(nums[i  + 1]);
-                console.log(nums[i - 1] + " / " + nums[i  + 1] + " is " + calc);
-                nums.splice(i, 2);
-                nums[pos - 1] = calc;
-                console.log(nums);
-                i = 0;
+        
+            for (var i = 0; i < nums.length; i++) {
+                var pos = i;
+                var calc = 0;
+                if (nums[i] === '+') {
+                    calc = Number(nums[i - 1]) + Number(nums[i  + 1]);
+                    console.log(nums[i - 1] + " + " + nums[i  + 1] + " is " + calc);
+                    nums.splice(i, 2);
+                    nums[pos - 1] = calc;
+                    console.log(nums);
+                    i = 0;
+                }
+                else if (nums[i] === '-') {
+                    calc = Number(nums[i - 1]) - Number(nums[i  + 1]);
+                    console.log(nums[i - 1] + " - " + nums[i  + 1] + " is " + calc);
+                    nums.splice(i, 2);
+                    nums[pos - 1] = calc;
+                    console.log(nums);
+                    i = 0;
+                }
             }
+            resultText.innerHTML = "Your result is: " + nums[0];
         }
-    
-        for (var i = 0; i < nums.length; i++) {
-            var pos = i;
-            var calc = 0;
-            if (nums[i] === '+') {
-                calc = Number(nums[i - 1]) + Number(nums[i  + 1]);
-                console.log(nums[i - 1] + " + " + nums[i  + 1] + " is " + calc);
-                nums.splice(i, 2);
-                nums[pos - 1] = calc;
-                console.log(nums);
-                i = 0;
-            }
-            else if (nums[i] === '-') {
-                calc = Number(nums[i - 1]) - Number(nums[i  + 1]);
-                console.log(nums[i - 1] + " - " + nums[i  + 1] + " is " + calc);
-                nums.splice(i, 2);
-                nums[pos - 1] = calc;
-                console.log(nums);
-                i = 0;
-            }
+        else {
+            alert("ERROR: Not enough numbers.");
+            reset();
         }
-        resultText.innerHTML = "Your result is: " + nums[0];
-    }
-    else {
-        alert("ERROR: Not enough numbers.");
-        reset();
     }
 }
 submitButt.addEventListener('click', calculate);
