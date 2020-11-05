@@ -69,6 +69,7 @@ function calculate() {
             }
             else {
                 alert("ERROR: Expecting operator.");
+                reset();
                 break;
             }
         }
@@ -93,6 +94,7 @@ function calculate() {
                 }
                 else {
                     alert("ERROR: Expecting number.");
+                    reset();
                     break;
                 }
             }
@@ -101,6 +103,7 @@ function calculate() {
             }
             else {
                 alert("ERROR: Invalid character detected.");
+                reset();
                 break;
             }
         }
@@ -146,6 +149,10 @@ function calculate() {
             i = 0;
         }
     }
+    
+    let resultField = document.createElement('p');
+    resultField.innerHTML = "Your result is: " + nums[0];
+    document.body.append(resultField);
 }
 submitButt.addEventListener('click', calculate);
 resetButt.addEventListener('click', reset);
