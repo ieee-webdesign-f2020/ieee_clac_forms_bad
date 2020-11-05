@@ -115,7 +115,7 @@ function calculate() {
             var pos = i;
             var calc = 0;
             if (nums[i] === 'x') {
-                calc = Number([i - 1]) * Number(nums[i  + 1]);
+                calc = Number(nums[i - 1]) * Number(nums[i  + 1]);
                 console.log(nums[i - 1] + " x " + nums[i  + 1] + " is " + calc);
                 nums.splice(i, 2);
                 nums[pos - 1] = calc;
