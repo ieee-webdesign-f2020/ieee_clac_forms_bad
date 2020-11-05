@@ -1,6 +1,7 @@
 const inputField = document.getElementById('form');
 const submitButt = document.getElementById('submit');
 const resetButt = document.getElementById('reset');
+const resultText = document.getElementById('result');
 inputField.value = null;
 
 function isNumber(input) { 
@@ -28,6 +29,7 @@ function isOperator(input) {
 }
 function reset() {
     inputField.value = null;
+    resultText.innerHTML = "";
 }
 
 // Returns false if last element in array is a number.
@@ -108,51 +110,54 @@ function calculate() {
             }
         }
     }
-    for (var i = 0; i < nums.length; i++) {
-        var pos = i;
-        var calc = 0;
-        if (nums[i] === 'x') {
-            calc = Number([i - 1]) * Number(nums[i  + 1]);
-            console.log(nums[i - 1] + " x " + nums[i  + 1] + " is " + calc);
-            nums.splice(i, 2);
-            nums[pos - 1] = calc;
-            console.log(nums);
-            i = 0;
+    if (nums.length > 1) {
+        for (var i = 0; i < nums.length; i++) {
+            var pos = i;
+            var calc = 0;
+            if (nums[i] === 'x') {
+                calc = Number([i - 1]) * Number(nums[i  + 1]);
+                console.log(nums[i - 1] + " x " + nums[i  + 1] + " is " + calc);
+                nums.splice(i, 2);
+                nums[pos - 1] = calc;
+                console.log(nums);
+                i = 0;
+            }
+            else if (nums[i] === '/') {
+                calc = Number(nums[i - 1]) / Number(nums[i  + 1]);
+                console.log(nums[i - 1] + " / " + nums[i  + 1] + " is " + calc);
+                nums.splice(i, 2);
+                nums[pos - 1] = calc;
+                console.log(nums);
+                i = 0;
+            }
         }
-        else if (nums[i] === '/') {
-            calc = Number(nums[i - 1]) / Number(nums[i  + 1]);
-            console.log(nums[i - 1] + " / " + nums[i  + 1] + " is " + calc);
-            nums.splice(i, 2);
-            nums[pos - 1] = calc;
-            console.log(nums);
-            i = 0;
-        }
-    }
-
-    for (var i = 0; i < nums.length; i++) {
-        var pos = i;
-        var calc = 0;
-        if (nums[i] === '+') {
-            calc = Number(nums[i - 1]) + Number(nums[i  + 1]);
-            console.log(nums[i - 1] + " + " + nums[i  + 1] + " is " + calc);
-            nums.splice(i, 2);
-            nums[pos - 1] = calc;
-            console.log(nums);
-            i = 0;
-        }
-        else if (nums[i] === '-') {
-            calc = Number(nums[i - 1]) - Number(nums[i  + 1]);
-            console.log(nums[i - 1] + " - " + nums[i  + 1] + " is " + calc);
-            nums.splice(i, 2);
-            nums[pos - 1] = calc;
-            console.log(nums);
-            i = 0;
-        }
-    }
     
-    let resultField = document.createElement('p');
-    resultField.innerHTML = "Your result is: " + nums[0];
-    document.body.append(resultField);
+        for (var i = 0; i < nums.length; i++) {
+            var pos = i;
+            var calc = 0;
+            if (nums[i] === '+') {
+                calc = Number(nums[i - 1]) + Number(nums[i  + 1]);
+                console.log(nums[i - 1] + " + " + nums[i  + 1] + " is " + calc);
+                nums.splice(i, 2);
+                nums[pos - 1] = calc;
+                console.log(nums);
+                i = 0;
+            }
+            else if (nums[i] === '-') {
+                calc = Number(nums[i - 1]) - Number(nums[i  + 1]);
+                console.log(nums[i - 1] + " - " + nums[i  + 1] + " is " + calc);
+                nums.splice(i, 2);
+                nums[pos - 1] = calc;
+                console.log(nums);
+                i = 0;
+            }
+        }
+        resultText.innerHTML = "Your result is: " + nums[0];
+    }
+    else {
+        alert("ERROR: Not enough numbers.");
+        reset();
+    }
 }
 submitButt.addEventListener('click', calculate);
 resetButt.addEventListener('click', reset);
