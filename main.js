@@ -3,92 +3,149 @@ const submitButt = document.getElementById('submit');
 const resetButt = document.getElementById('reset');
 inputField.value = null;
 
-function calculate() {
-    userInput = inputField.value;
-    console.log(userInput);
-    var firstNum;
-    var secondNum;
-    var firstNumIndex;
-    var operator;
-    for (var i = 0; i < userInput.length; i++) {
-        if (userInput[i] === ' ') {
-            console.log(userInput.slice(0, i));
-            firstNum = userInput.slice(0, i);
-            firstNumIndex = i;
-            break;
+function isNumber(input) { 
+    for (var i = 0; i < 10; i++) {
+        //console.log("Testing if "+input+" is the number "+i);
+        if (i === parseInt(input)) {
+            return true;
         }
     }
-    var validOperator = true;
-    if (firstNum) {
-        operator = userInput[firstNumIndex + 1];
-        switch (operator) {
-            case '+':
-                console.log("plus");
-                break;
-            case '-':
-                console.log("minus");
-                break;
-            case 'x':
-                console.log("times");
-                break;
-            case '/':
-                console.log("divide");
-                break;
-            default:
-                alert("Invalid operator. Shame on you.");
-                validOperator = false;
-        }
-    }
-    if (validOperator) {
-        if (userInput[firstNumIndex + 2] !== ' ') {
-            alert("Missing space after operator.");
-        }
-        else {
-            var newStartIndex = firstNumIndex + 3;
-            if (userInput[newStartIndex] === ' ') {
-                alert("Too many spaces after operator.");
-            }
-            else {
-                for (var i = userInput[newStartIndex]; i < userInput.length; i++) {
-                    if (userInput[i] === ' ') {
-                        console.log(userInput.slice(newStartIndex, userInput.length));
-                        secondNum = userInput.slice(newStartIndex, userInput.length);
-                        break;
-                    }
-                }
-            }
-        }
-    }
-    if (firstNum && secondNum) {
-        var result;
-        var num1 = parseInt(firstNum);
-        var num2 = parseInt(secondNum);
-        switch (operator) {
-            case '+':
-                result = num1 + num2;
-                break;
-            case '-':
-                result = num1 - num2;
-                break;
-            case 'x':
-                result = num1 * num2;
-                break;
-            case '/':
-                if (num2 === 0) {
-                    alert("Cannot divide by zero.")
-                }
-                else {
-                    result = num1 / num2;
-                }
-                break;
-        }
-        alert("Your answer is " + result);
+    return false;
+}
+function isOperator(input) {
+    switch (input) {
+        case '+':
+            return true;
+        case '-':
+            return true;
+        case 'x':
+            return true;
+        case '/':
+            return true;
+        default:
+            return false;
     }
 }
-
 function reset() {
     inputField.value = null;
 }
 
+// Returns false if last element in array is a number.
+// Returns true if array has no elements or if last element is an operator.
+function expectingNumber(array) { 
+    if (array.length > 0) {
+        if (!isOperator(array[array.length - 1])) {
+            return false;
+        }
+    }
+    return true;
+}
+// Prints useful messages.
+function debugLastNum(array) {
+    var q = "Is last nums element a number? ";
+    if (array.length === 0) {
+        return q + "No, nums is empty.";
+    }
+    else if (expectingNumber(array)) {
+        return q + "No, last element is operator " + array[array.length - 1];
+    }
+    else {
+        return q + "Yes, last element is number " + array[array.length - 1];
+    }
+}
+
+function calculate() {
+    userInput = inputField.value + ' ';
+    console.log("User input: "+userInput);
+    var nums = new Array;
+    var tempNum = "";
+    for (var i = 0; i < userInput.length; i++) {
+        console.log(">>Reached character " + userInput[i]);
+        if (isNumber(userInput[i])) {
+            console.log(debugLastNum(nums));
+            if (expectingNumber(nums)) {
+                tempNum += userInput[i];
+                console.log("updated tempnum: " + tempNum);
+            }
+            else {
+                alert("ERROR: Expecting operator.");
+                break;
+            }
+        }
+        else {
+            if (tempNum.length > 0) {
+                console.log("Pushing tempNum to nums.");
+                nums.push(tempNum);
+                console.log(nums);
+                tempNum = "";
+            } 
+            else {
+                console.log("tempNum empty. Not pushing anything to nums.");
+            }
+
+            if (isOperator(userInput[i])) {
+                console.log(debugLastNum(nums));
+                if (!expectingNumber(nums)) {
+                    console.log("Pushing operator to nums.");
+                    console.log(nums);
+                    nums.push(userInput[i]);
+                    
+                }
+                else {
+                    alert("ERROR: Expecting number.");
+                    break;
+                }
+            }
+            else if (userInput[i] === ' ') {
+                console.log(debugLastNum(nums));
+            }
+            else {
+                alert("ERROR: Invalid character detected.");
+                break;
+            }
+        }
+    }
+    for (var i = 0; i < nums.length; i++) {
+        var pos = i;
+        var calc = 0;
+        if (nums[i] === 'x') {
+            calc = Number([i - 1]) * Number(nums[i  + 1]);
+            console.log(nums[i - 1] + " x " + nums[i  + 1] + " is " + calc);
+            nums.splice(i, 2);
+            nums[pos - 1] = calc;
+            console.log(nums);
+            i = 0;
+        }
+        else if (nums[i] === '/') {
+            calc = Number(nums[i - 1]) / Number(nums[i  + 1]);
+            console.log(nums[i - 1] + " / " + nums[i  + 1] + " is " + calc);
+            nums.splice(i, 2);
+            nums[pos - 1] = calc;
+            console.log(nums);
+            i = 0;
+        }
+    }
+
+    for (var i = 0; i < nums.length; i++) {
+        var pos = i;
+        var calc = 0;
+        if (nums[i] === '+') {
+            calc = Number(nums[i - 1]) + Number(nums[i  + 1]);
+            console.log(nums[i - 1] + " + " + nums[i  + 1] + " is " + calc);
+            nums.splice(i, 2);
+            nums[pos - 1] = calc;
+            console.log(nums);
+            i = 0;
+        }
+        else if (nums[i] === '-') {
+            calc = Number(nums[i - 1]) - Number(nums[i  + 1]);
+            console.log(nums[i - 1] + " - " + nums[i  + 1] + " is " + calc);
+            nums.splice(i, 2);
+            nums[pos - 1] = calc;
+            console.log(nums);
+            i = 0;
+        }
+    }
+}
 submitButt.addEventListener('click', calculate);
 resetButt.addEventListener('click', reset);
